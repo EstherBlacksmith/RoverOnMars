@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoverController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,5 @@ Route::get('/', function () {
 Route::get('/mars',function() {
     return view('mars');
 });
+
+Route::post('/movement', [RoverController::class,'movement'])->name('movement');

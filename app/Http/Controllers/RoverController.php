@@ -4,36 +4,44 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class Rover extends Controller
+class RoverController extends Controller
 {
-     
-    /**Initial Position */
-    var $direction = "N";
-    var $positionX = 0;
-    var $positionY = 0;
+    public $direction, $positionX, $positionY, $correctValues ;
+
+    function __construct() {
+        /**Initial Position */
+        $this->direction = "N";
+        $this->positionX = 0;
+        $this->positionY = 0;
+        $this->correctValues = array("A","L","R");
+    }
+    
+
 
     /**Movement parameters value control */
     function movementControl($movement){
 
-        $incorrectValue = false;
-        $correctValues = array("A","L","R");
+        $incorrectValue = false;        
         
-        if (length($correctValues) == 0){
+        if(count($movement) == 0){
             //There is an incorrect value for the movement
             $incorrectValue = true;
-        }else{      
+        }else{                
+            foreach($movement as $order) {
 
-            for ($i=0; $i <= length($correctValues) ; $i++) { 
-                $correctValues[$i] = stripos($movement, $correctValues);
-                if ($correct === false) {
-                    //There is an incorrect value for the movement
-                    $incorrectValue = true;
-                }
-            }        
+                if(strlen($order) > 0){
+
+                    if(($order <> 'A') && ($order <> 'a')
+                    && ($order <> 'L') && ($order <> 'l')
+                    && ($order <> 'R') && ($order <> 'r')){                         
+                        //There is an incorrect value for the movement
+                        $incorrectValue = true;                    
+                    }
+                 }
+            }
         }
 
-        return $incorrectValue;      
-
+        return $incorrectValue;    
     }
 
     /**Coordinates parameters value control*/
@@ -61,6 +69,19 @@ class Rover extends Controller
       
     }
 
+    /**Direction parameters value control (N,S,E,W) */
+    function InitialDirectionControl($initialDirection){
+
+        if(($initialDirection <> 'N') && ($initialDirection <> 'n')
+        && ($initialDirection <> 'S') && ($initialDirection <> 's')
+        && ($initialDirection <> 'E') && ($initialDirection <> 'e')
+        && ($initialDirection <> 'W') && ($initialDirection <> 'w')){
+            
+            return false;
+        }
+    }
+
+
     /**Set initial direction */
     function setInitialDirection($initialDirection){
 
@@ -71,10 +92,10 @@ class Rover extends Controller
         }
     }   
 
+ 
     /**Set initial position */
     function setInitialPosition($initialX,$initialY){
-
-        if(!$this->movementControl($initialDirection)){
+        if(!$this->directionControl($initialDirection)){
             $direction = $initialDirection;
         }else{
             return "Incorrect value";
@@ -97,14 +118,19 @@ class Rover extends Controller
     }
 
     /**Movement management (A,L,R)*/
-    function movement($movement){    
+    function movement(Request $request){   
+
+        $movementArray  = str_split($request->movement);
        
-        
+        if($this->movementControl($movementArray)){
+            return "Incorrect movement value";
+        }
+
         //For every order must control if is a position o direction order
-        for ($i=0; $i <= length($movement) ; $i++) { 
-            $movement[$i] = stripos($movement, $correctValues);
-            if ($movement[$i]  == 'A') {
-                $this->position();
+        foreach ($movementArray as $movement) {
+
+            if ($movement  == 'A') {
+                $this->setPosition();
 
                  //While the coordinates are correct
                 if(!$this->squareControl() === true){
@@ -112,71 +138,71 @@ class Rover extends Controller
                 }
             }
             else{
-                $this->direction($movement[$i]);
+                echo($this->setDirection($movement));
             }
-        }   
+        }
 
+        
     }
 
     /** Position management */
-    function position(){
-        switch ($direcction) {
+    function setPosition(){
+        switch ($this->direcction) {
             case 'E':
-                $positionX = ++$positionX;
+                $this->positionX = ++$this->positionX;
                 break;
             case 'W':
-                $positionX = --$positionX;
+                $this->positionX = --$this->positionX;
                 break;
             case 'S':
-                $positionY = --$positionY;
+                $this->positionY = --$this->positionY;
                 break;
             default: //N
-                $positionY = ++$positionY;
+                $this->positionY = ++$this->positionY;
                 break;
         }
 
     }
 
     /**Direction Management */
-    function direction($movement){ 
+    function setDirection($movement){   
 
-        if($this->movementControl($movement)){        
-            return "Incorrect value";
-        }        
+        if ($movement == 'L' || $movement == 'l'){
 
-        if ($movement == 'L'){
-
-            switch ($direction) {
+            switch ($this->direction) {
                 case 'E':
-                    $direction = 'N';
+                    $this->direction = 'N';
                     break;
                 case 'S':
-                    $direction = 'E';
+                    $this->direction = 'E';
                         break;
                 case 'W':
-                    $direction = 'S';
+                    $this->direction = 'S';
                     break;
                 default: //N
-                    $direction = 'W';
+                    $this->direction = 'W';
                     break;
             }
 
-        }elseif ($movement =='R') {
-        
-            switch ($direction) {
+        }elseif ($movement =='R' || $movement == 'r') {
+            switch ($this->direction) {
                 case 'E':
-                    $direction = 'S';
+                    $this->direction = 'S';
                     break;
                 case 'S':
-                    $direction = 'W';
+                    $this->direction = 'W';
                     break;
                 case 'W':
-                    $direction = 'N';
+                    $this->direction = 'N';
                     break;
                 default: //N
-                    $direction = 'E';
+                    $this->direction = 'E';
                 break;
             }
         }
+        
+        return $this->direction;
     }
+
+
 }
