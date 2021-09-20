@@ -1,0 +1,25 @@
+.rover {
+    background-color:dodgerblue !important;
+    background-image: url('../images/rover.png') ;
+
+}
+
+.mars{
+    background-color: orange;
+}
+
+.greyCells{
+    background-color: darkGrey;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-auto-rows: minmax(40px, auto);
+    grid-gap: 1px;
+  }
+
+.grid-item {
+    border: 1px solid black;
+}
+ 
