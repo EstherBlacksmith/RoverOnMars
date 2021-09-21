@@ -25,10 +25,29 @@ class RoverController extends Controller
         $this->squareX = $request->squareX;
         $this->squareY = $request->squareY;        
     }
+
+    /**The final positions and results */
+    function getFinalResult($result){
+        $message = [
+            'message'=>  $result,
+            'XRoverPosition' => $this->XRoverPosition,
+            "YRoverPosition" => $this->YRoverPosition,
+            "direction"=> $this->direction,
+            "squareX" => $this->squareX,
+            "squareY" => $this->squareY,
+            "done" => "done"
+        ];
+
+        return $message;
+    }
     
     function RoverPositionControl(){
         //Rover is inside the square
         if (($this->squareX < $this->XRoverPosition) || ($this->squareY < $this->YRoverPosition)){
+            return false; //"Position incorrect value";
+        }
+
+        if (($this->XRoverPosition <= 0) || ( $this->YRoverPosition  <= 0)){
             return false; //"Position incorrect value";
         }
 
@@ -96,7 +115,8 @@ class RoverController extends Controller
     }  
 
     /**Square stack overflow Control */
-    function overflowControl(){      
+    function overflowControl(){              
+
         if (($this->XRoverPosition > $this->squareX) || ($this->YRoverPosition > $this->squareY)){
             return false;
         }
@@ -104,21 +124,23 @@ class RoverController extends Controller
         if (($this->XRoverPosition < 0) || ($this->YRoverPosition < 0)){
             return false;
         }       
+
         return true;
     }
 
     /**Orders validation */
     function valuesValidation(){
         if (!$this->RoverPositionControl()){
-            return redirect('/mars')->with(['status'=> "The Rover position exceeds the design square"]);    
+            return redirect('/mars')->with($this->getFinalResult( "The Rover position exceeds the design square") );         
+ 
         }
 
         if(!$this->InitialDirectionControl()){
-            return redirect('/mars')->with(['status'=> "The Rover direction is incorrect: ". $this->direction]);    
+            return redirect('/mars')->with($this->getFinalResult( "The Rover direction is incorrect") );          
         }
        
         if(!$this->coordinatesControl()){
-            return redirect('/mars')->with(['status'=> "Incorrect coordinates value"]);    
+            return redirect('/mars')->with($this->getFinalResult( "Incorrect coordinates value") );            
         }
     }
 
@@ -131,13 +153,12 @@ class RoverController extends Controller
 
         $movementArray  = str_split($request->movement);
 
-        if(!$this->movementControl($movementArray)){
-            return redirect('/mars')->with(['status'=>  "Incorrect movement value"]);    
+        if(!$this->movementControl($movementArray)){        
+            return redirect('/mars')->with($this->getFinalResult( "Incorrect movement value ".implode("-", $movementArray) ));    
         }
 
         if (!$this->overflowControl()){
-            return redirect('/mars')->with(['status'=>  "The Rover position exceeds the design square"]);     
-
+            return redirect('/mars')->with($this->getFinalResult( "The Rover position exceeds the design square"));
         }
 
         //For every order must control if is a position o direction order
@@ -147,15 +168,16 @@ class RoverController extends Controller
             if ($movement  == 'A') {
                 $this->setPosition();
                  //While the coordinates are correct
-                if(!$this->overflowControl()){                   
-                    return redirect('/mars')->with(['status'=>  "The Rover position exceeds the design square"]);         
+                if(!$this->overflowControl()){          
+                    return redirect('/mars')->with($this->getFinalResult( "The Rover position exceeds the design square"));         
                 }
             }else{               
                 $this->setDirection($movement);
             }
         }
 
-        return redirect('/mars')->with(['status'=>  "final position X->".$this->XRoverPosition."<br>"."final position Y->".$this->YRoverPosition."<br>"."Final direction->".$this->direction]);
+        return redirect('/mars')->with($this->getFinalResult( "Congratulations!!"));         
+
     }
 
     /** Position management */

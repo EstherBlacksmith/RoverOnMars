@@ -1,5 +1,5 @@
 .rover {
-    background-color:dodgerblue !important;
+    background-color: #1684a0 !important;
     background-image: url('../images/rover.png') ;
 
 }
@@ -23,3 +23,11 @@
     border: 1px solid black;
 }
  
+.disabled{
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.65;
+    filter: alpha(opacity=65);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}

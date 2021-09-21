@@ -41,16 +41,20 @@
 
     deleteRover();   
 
-    var initialX = document.getElementById('XRoverPosition').value -2;
-    var initialY = document.getElementById('YRoverPosition').value -2;    
+    var initialX = document.getElementById('XRoverPosition').value -1;
+    var initialY = document.getElementById('YRoverPosition').value -1;    
 
     var roverDiv =  document.getElementById(initialX + "_" + initialY);
+    var submitButton = document.getElementById("submitButton");
+
+    submitButton.classList.remove("disabled");
+    document.getElementById("submitButton").classList.remove("disabled");
 
     roverDiv.classList.add("rover");   
 
   }
 
-  //The selected suqre for the Rover movements
+  //The selected square for the Rover movements
   function btnSquare() {    
 
     var valueRows = document.getElementById('squareX').value;
@@ -98,4 +102,24 @@
     }
   }
 
+  function newMars(XRoverPosition,YRoverPosition,squareX,squareY){
+    
+    for (r = 0; r < squareX; r++) //rows    
+    {   
+      for (c = 0; c < squareY; c++) //columns
+      {
+        //document.getElementById(r + "_" + c).style.backgroundColor = 'orange';
+        document.getElementById(r + "_" + c).classList.remove("greyCells");
+
+        document.getElementById(r + "_" + c).classList.add("mars");
+
+      } 
+    }
+    
+    XRoverPosition = XRoverPosition - 1;
+    YRoverPosition = YRoverPosition - 1;
+    roverDiv =  document.getElementById(XRoverPosition + "_" + YRoverPosition);
+    //var roverNew =  document.getElementById(XRoverPosition + "_" + YRoverPosition );
+    roverDiv.classList.add("rover");   
+  }
   </script>
