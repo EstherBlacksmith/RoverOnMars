@@ -15,24 +15,24 @@
         <div>
           <p>Select the size for the square for the Rover movement</p>
 
-          <label for="XRange" class="form-label"></label>
-          <input type="range" class="form-range mb-3" min="2" max="10" step="1" value="2" id="XRange" name="XRange">
-          <p>X Value: <span id="Xvalue"></span></p>
+          <label for="squareX" class="form-label"></label>
+          <input type="range" class="form-range mb-3" min="2" max="10" step="1" value="2" id="squareX" name="squareX">
+          <p>X Value: <span id="outputX"></span></p>
 
-          <label for="YRange" class="form-label"></label>
-          <input type="range" class="form-range mb-3" min="2" max="10" step="1" value="2" id="YRange"  name="YRange">
-          <p>Y Value: <span id="Yvalue"></span></p>
+          <label for="squareY" class="form-label"></label>
+          <input type="range" class="form-range mb-3" min="2" max="10" step="1" value="2" id="squareY"  name="squareY">
+          <p>Y Value: <span id="outputY"></span></p>
      
           <button type="button" class="btn btn-success btn-lg mb-3" onclick="btnSquare()">Mars</button>
         </div>
         <div class="col-sm-6">           
-          <label for="XRoverRange" class="form-label">Initial position X</label>
-          <input type="range" class="form-range mb-3" min="2" max="10" step="1" value="2" id="XRoverRange" name="XRoverRange">
-          <p>X position: <span id="Xposition"></span></p>
+          <label for="XRoverPosition" class="form-label">Initial position X</label>
+          <input type="range" class="form-range mb-3" min="2" max="10" step="1" value="2" id="XRoverPosition" name="XRoverPosition">
+          <p>X position: <span id="outputRoverX"></span></p>
 
-          <label for="YRoverRange" class="form-label">Initial position Y</label>
-          <input type="range" class="form-range mb-3" min="2" max="10" step="1" value="2" id="YRoverRange" name="YRoverRange">
-          <p>Y position: <span id="Yposition"></span></p>          
+          <label for="YRoverPosition" class="form-label">Initial position Y</label>
+          <input type="range" class="form-range mb-3" min="2" max="10" step="1" value="2" id="YRoverPosition" name="YRoverPosition">
+          <p>Y position: <span id="outputRoverY"></span></p>          
           
           <button type="button" class="btn btn-success btn-lg mb-3" onclick="btnRover()">Rover</button>
 
@@ -48,28 +48,28 @@
         <div>
           <label for="direction" class="form-label">Initial direction:  <span style="color:#ffa600">N</span>orth,  <span style="color:#ffa600">S</span>outh, <span style="color:#ffa600">E</span>ast or <span style="color:#ffa600">W</span>est. </label>
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="direction" id="direction" value="north" checked>
+            <input class="form-check-input" type="radio" name="direction" id="directionN" value="N" checked>
             <label class="form-check-label" for="north">
               North
             </label>
           </div>
   
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="direction" id="direction" value="south">
+            <input class="form-check-input" type="radio" name="direction" id="directionS" value="N">
             <label class="form-check-label" for="south">
               South
             </label>
           </div>
   
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="direction" id="direction" value="west">
+            <input class="form-check-input" type="radio" name="direction" id="directionW" value="W">
             <label class="form-check-label" for="west">
               West
             </label>
           </div>
   
           <div class="form-check mb-3">
-            <input class="form-check-input" type="radio" name="direction" id="eadirectionst" value="east">
+            <input class="form-check-input" type="radio" name="direction" id="directionE" value="E">
             <label class="form-check-label" for="east">
               East
             </label>
@@ -98,7 +98,14 @@
   </div>
  
 </div>
+<div style="background-color: #ffa600">
+  @if (session('status'))
+    <div class="alert alert-success">
+        {{ session('status') }}
+    </div>
+@endif
 
+</div>
 </body>
 @include('scripts')
 

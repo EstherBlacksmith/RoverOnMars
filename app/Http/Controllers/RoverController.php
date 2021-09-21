@@ -6,27 +6,42 @@ use Illuminate\Http\Request;
 
 class RoverController extends Controller
 {
-    public $direction, $positionX, $positionY,$squareX, $squareY;
-
-    function __construct() {
-        /**Initial Position */
+    public $direction, $XRoverPosition, $YRoverPosition,$squareX, $squareY;
+   
+    /**Default values */
+    function __construct() {     
         $this->direction = "N";
-        $this->positionX = 0;
-        $this->positionY = 0;
+        $this->XRoverPosition = 0;
+        $this->YRoverPosition = 0;
         $this->squareX = 0 ;
         $this->squareY = 0 ;
+    }
 
+    /**Initial Positions */
+    function setInitialValues($request){
+        $this->direction = $request->direction;
+        $this->XRoverPosition = $request->XRoverPosition;
+        $this->YRoverPosition = $request->YRoverPosition;
+        $this->squareX = $request->squareX;
+        $this->squareY = $request->squareY;        
     }
     
+    function RoverPositionControl(){
+        //Rover is inside the square
+        if (($this->squareX < $this->XRoverPosition) || ($this->squareY < $this->YRoverPosition)){
+            return false; //"Position incorrect value";
+        }
+
+        return true;
+    }
 
     /**Movement parameters value control */
     function movementControl($movement){
-
-        $incorrectValue = false;        
+        $correctValue = true;        
         
         if(count($movement) == 0){
             //There is an incorrect value for the movement
-            $incorrectValue = true;
+            $correctValue = false;
         }else{                
             foreach($movement as $order) {
 
@@ -34,154 +49,131 @@ class RoverController extends Controller
                     $order = strtoupper($order);
                     if( ($order <> 'A') && ($order <> 'L') && ($order <> 'R') ){                         
                         //There is an incorrect value for the movement
-                        $incorrectValue = true;                    
+                        $correctValue = false;                    
                     }
                  }
             }
         }
 
-        return $incorrectValue;    
+        return $correctValue;    
     }
 
     /**Coordinates parameters value control*/
-    function coordinatesControl($squareX, $squareY){      
-        if (!is_int($squareX) || !is_int($squareY)){
-            return "Coordinates incorrect value";
+    function coordinatesControl(){
+        if (($this->squareX == null) || ($this->squareY  == null)){
+            return false; 
         }
 
-        if (($squareX == 0) || ($squareY == 0)){
-            return "Coordinates incorrect value";
+        if (($this->squareX == 0) || ($this->squareY  == 0)){
+            return false; 
         }     
+        return true;
 
     }
 
     /**Initial position value control */
-   /* function positionControl($squareX,$squareY,$coordX,$coordY){
-
+    function positionControl($squareX,$squareY,$coordX,$coordY){
         if (!is_int($squareX) || !is_int($squareY)){
-            return "Position incorrect value";
+            return false; //"Position incorrect value";
         }
 
         if (($squareX > $coordX) || ($squareY > $coordY)){
-            return "Position incorrect value";
+            return false; //"Position incorrect value";
         }
-      
-    }*/
+        return true;      
+    }
 
     /**Direction parameters value control (N,S,E,W) */
-    function InitialDirectionControl($initialDirection){
+    function InitialDirectionControl(){
+        $this->direction = mb_strtoupper($this->direction);
 
-        $initialDirection = mb_strtoupper($initialDirection);
-
-        if(($initialDirection <> 'N') && ($initialDirection <> 'S')
-        && ($initialDirection <> 'E') && ($initialDirection <> 'W') ){
+        if(($this->direction <> 'N') && ($this->direction <> 'S')
+        && ($this->direction <> 'E') && ($this->direction <> 'W') ){
             return false;
         }
-    }
-
-
-    /**Set initial direction */
-    function setInitialDirection($initialDirection){
-
-        if($this->InitialDirectionControl($initialDirection)){
-            $direction = $initialDirection;
-        }else{
-            return "Incorrect Initial direction value";
-        }
-    }   
-
- 
-    /**Set initial position */
-    function setInitialPosition($XRoverRange,$YRoverRange){
-        if($this->InitialDirectionControl($this->direction)){
-            $direction = $this->direction;
-            if($this->squareControl($XRoverRange,$YRoverRange)){
-                $this->positionX = $XRoverRange;
-                $this->positionY = $YRoverRange;
-            }else{
-                return  "Stack overflow 1";
-            }
-            
-        }else{
-            return "Incorrect initial position";
-        }    
-        
-    }
-
-    /**Square Control */
-    function squareControl($XRoverRange,$YRoverRange){
-        echo "positionX->".$this->positionX."Range x:".$XRoverRange."<br>". "position Y->".$this->positionY."Range y:".$YRoverRange."<br>" ;
-        if (($this->positionX < $XRoverRange) || ($this->positionY < $YRoverRange)){
-            return false;
-        }
-
-        if (($this->positionX < 0) || ($this->positionY < 0)){
-            return false;
-        }
-
-        
 
         return true;
+    }  
+
+    /**Square stack overflow Control */
+    function overflowControl(){      
+        if (($this->XRoverPosition > $this->squareX) || ($this->YRoverPosition > $this->squareY)){
+            return false;
+        }
+
+        if (($this->XRoverPosition < 0) || ($this->YRoverPosition < 0)){
+            return false;
+        }       
+        return true;
+    }
+
+    /**Orders validation */
+    function valuesValidation(){
+        if (!$this->RoverPositionControl()){
+            return redirect('/mars')->with(['status'=> "The Rover position exceeds the design square"]);    
+        }
+
+        if(!$this->InitialDirectionControl()){
+            return redirect('/mars')->with(['status'=> "The Rover direction is incorrect: ". $this->direction]);    
+        }
+       
+        if(!$this->coordinatesControl()){
+            return redirect('/mars')->with(['status'=> "Incorrect coordinates value"]);    
+        }
     }
 
     /**Movement management (A,L,R)*/
     function movement(Request $request){   
 
+        $this->setInitialValues($request);
+
+        $this->valuesValidation();    
+
         $movementArray  = str_split($request->movement);
-        $XRoverRange = $request->XRoverRange;
-        $YRoverRange = $request->YRoverRange;
 
-        $this->setInitialPosition($request->XRoverRange,$request->YRoverRange);
-
-        if($this->movementControl($movementArray)){
-            return "Incorrect movement value";
+        if(!$this->movementControl($movementArray)){
+            return redirect('/mars')->with(['status'=>  "Incorrect movement value"]);    
         }
 
-        if ($this->squareControl($XRoverRange,$YRoverRange)){
-            return $this->squareControl($XRoverRange,$YRoverRange);
-        }else{
-            echo("X->".$XRoverRange." Y->".$YRoverRange);
-            return  "Stack overflow 2";
+        if (!$this->overflowControl()){
+            return redirect('/mars')->with(['status'=>  "The Rover position exceeds the design square"]);     
+
         }
 
         //For every order must control if is a position o direction order
         foreach ($movementArray as $movement) {
             $movement = strtoupper($movement);
+
             if ($movement  == 'A') {
                 $this->setPosition();
-
                  //While the coordinates are correct
-                if($this->squareControl($XRoverRange,$YRoverRange) === true){
-                    return $this->squareControl($XRoverRange,$YRoverRange);
-                }else{
-                    return  "Stack overflow 3";
+                if(!$this->overflowControl()){                   
+                    return redirect('/mars')->with(['status'=>  "The Rover position exceeds the design square"]);         
                 }
-            }
-            else{
-                echo($this->setDirection($movement));
+            }else{               
+                $this->setDirection($movement);
             }
         }
 
-        
+        return redirect('/mars')->with(['status'=>  "final position X->".$this->XRoverPosition."<br>"."final position Y->".$this->YRoverPosition."<br>"."Final direction->".$this->direction]);
     }
 
     /** Position management */
     function setPosition(){
         switch ($this->direction) {
             case 'E':
-                $this->positionX = ++$this->positionX;
+                ++$this->XRoverPosition;
                 break;
             case 'W':
-                $this->positionX = --$this->positionX;
+                --$this->XRoverPosition; 
                 break;
             case 'S':
-                $this->positionY = --$this->positionY;
+                --$this->YRoverPosition; 
                 break;
             default: //N
-                $this->positionY = ++$this->positionY;
+                ++$this->YRoverPosition; 
                 break;
-        }       
-
+        }   
     }
 
     /**Direction Management */
@@ -220,9 +212,7 @@ class RoverController extends Controller
                     $this->direction = 'E';
                 break;
             }
-        }
-        
-        return $this->direction;
+        }        
     }
 
 

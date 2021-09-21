@@ -1,10 +1,10 @@
 <script>
 
-  //Mars
-  var sliderX = document.getElementById("XRange");
-  var outputX = document.getElementById("Xvalue");
-  var sliderY = document.getElementById("YRange");
-  var outputY = document.getElementById("Yvalue");
+  //Mars 
+  var sliderX = document.getElementById("squareX");
+  var outputX = document.getElementById("outputX");
+  var sliderY = document.getElementById("squareY");
+  var outputY = document.getElementById("outputY");
 
   outputX.innerHTML = sliderX.value; 
 
@@ -19,10 +19,10 @@
   }
 
   //Rover
-  var sliderRoverX = document.getElementById("XRoverRange");
-  var outputRoverX = document.getElementById("Xposition");
-  var sliderRoverY = document.getElementById("YRoverRange");
-  var outputRoverY = document.getElementById("Yposition");
+  var sliderRoverX = document.getElementById("XRoverPosition");
+  var outputRoverX = document.getElementById("outputRoverX");
+  var sliderRoverY = document.getElementById("YRoverPosition");
+  var outputRoverY = document.getElementById("outputRoverY");
 
   outputRoverX.innerHTML = sliderRoverX.value; 
 
@@ -41,8 +41,8 @@
 
     deleteRover();   
 
-    var initialX = document.getElementById('XRoverRange').value -2;
-    var initialY = document.getElementById('YRoverRange').value -2;    
+    var initialX = document.getElementById('XRoverPosition').value -2;
+    var initialY = document.getElementById('YRoverPosition').value -2;    
 
     var roverDiv =  document.getElementById(initialX + "_" + initialY);
 
@@ -53,8 +53,8 @@
   //The selected suqre for the Rover movements
   function btnSquare() {    
 
-    var valueRows = document.getElementById('XRange').value;
-    var valueColumns = document.getElementById('YRange').value;
+    var valueRows = document.getElementById('squareX').value;
+    var valueColumns = document.getElementById('squareY').value;
 
     greyCells();
     
