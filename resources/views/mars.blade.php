@@ -107,7 +107,6 @@
         @endfor           
       </div>
 
-      <div class="fs-4 text text-center" style="background-color:tomato" >Y</div> 
       
       <br>
       @if(session('success'))
@@ -136,9 +135,7 @@
       </div>
       
     </div>
-    <div class="col-sm-1" style="background-color:tomato">
-      X
-    </div>
+   
   </div>
  
 </div>

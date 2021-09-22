@@ -44,7 +44,7 @@
     var initialX = document.getElementById('XRoverPosition').value -1;
     var initialY = document.getElementById('YRoverPosition').value -1;    
 
-    var roverDiv =  document.getElementById(initialX + "_" + initialY);
+    var roverDiv =  document.getElementById(initialY + "_" + initialX);
     var submitButton = document.getElementById("submitButton");
 
     submitButton.classList.remove("disabled");
@@ -57,8 +57,8 @@
   //The selected square for the Rover movements
   function btnSquare() {    
 
-    var valueRows = document.getElementById('squareX').value;
-    var valueColumns = document.getElementById('squareY').value;
+    var valueColumns= document.getElementById('squareX').value;
+    var valueRows = document.getElementById('squareY').value;
 
     greyCells();
     
@@ -118,7 +118,7 @@
     
     XRoverPosition = XRoverPosition - 1;
     YRoverPosition = YRoverPosition - 1;
-    roverDiv =  document.getElementById(XRoverPosition + "_" + YRoverPosition);
+    roverDiv =  document.getElementById(YRoverPosition + "_" + XRoverPosition);
     //var roverNew =  document.getElementById(XRoverPosition + "_" + YRoverPosition );
     roverDiv.classList.add("rover");   
   }
