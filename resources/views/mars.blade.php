@@ -129,7 +129,7 @@
         <p>Direction {{session('direction')}}</p>
       @endif
         @if(session('done'))
-          <button onclick="newMars({{session('XRoverPosition')}},{{session('YRoverPosition')}},{{session('squareX')}},{{session('squareY')}})">Show final position</button>
+        <div class="btn btn-primary mb-3" style="background-color: tomato ;" onclick="newMars({{session('XRoverPosition')}},{{session('YRoverPosition')}},{{session('squareX')}},{{session('squareY')}})">Show final position</div>
         @endif
 
       </div>
