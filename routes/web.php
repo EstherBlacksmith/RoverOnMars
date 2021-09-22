@@ -15,7 +15,7 @@ use App\Http\Controllers\RoverController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('mars');
 });
 
 Route::get('/mars',function() {
